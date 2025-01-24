@@ -1,0 +1,124 @@
+# general settings
+name: t_cloud_CR_former
+model_type: ImageCleanModel
+scale: 1
+num_gpu: 2
+manual_seed: 100
+
+# dataset and data loader settings
+datasets:
+  train:
+    name: TrainSet
+    type: Dataset_PairedImage
+    dataroot_gt: /data/wy/data/cloud/T-Cloud/train/reference
+    dataroot_lq: /data/wy/data/cloud/T-Cloud/train/cloud
+    geometric_augs: true
+
+    filename_tmpl: '{}'
+    io_backend:
+      type: disk
+
+    # data loader
+    use_shuffle: true
+    num_worker_per_gpu: 8
+    batch_size_per_gpu: 1
+
+    ### ------- Training on single fixed-patch size 128x128---------
+    mini_batch_sizes: [1]
+    iters: [352800]
+    gt_size: 256 
+    gt_sizes: [256]
+    ### ------------------------------------------------------------
+
+    dataset_enlarge_ratio: 1
+    prefetch_mode: ~
+
+  val:
+    name: ValSet
+    type: Dataset_PairedImage
+    dataroot_gt: /data/wy/data/cloud/T-Cloud/test/reference
+    dataroot_lq: /data/wy/data/cloud/T-Cloud/test/cloud
+    gt_size: 256
+    io_backend:
+      type: disk
+
+# network structures
+network_g:
+  type: CR_former
+  inp_channels: 3
+  out_channels: 3
+  dim: 48
+  num_blocks: [4,6,6,8]
+  heads: [1,2,4,8]
+  ffn_expansion_factor: 2.66
+  bias: False
+  LayerNorm_type: WithBias
+ 
+  
+
+# path
+path:
+  pretrain_network_g: ~
+  strict_load_g: true
+  resume_state: ~
+
+# training settings
+train:
+  total_iter: 352800
+  warmup_iter: -1 # no warm up
+  use_grad_clip: true
+
+  # Split 300k iterations into two cycles. 
+  # 1st cycle: fixed 3e-4 LR for 92k iters. 
+  # 2nd cycle: cosine annealing (3e-4 to 1e-6) for 208k iters.
+  scheduler:
+    type: CosineAnnealingRestartCyclicLR
+    periods: [105840, 246960]
+    restart_weights: [1,1]
+    eta_mins: [0.0003,0.000001]   
+  
+  mixing_augs:
+    mixup: false
+    mixup_beta: 1.2
+    use_identity: true
+
+  optim_g:
+    type: AdamW
+    lr: !!float 3e-4
+    weight_decay: !!float 1e-4
+    betas: [0.9, 0.999]
+  
+  # losses
+  pixel_opt:
+    type: L1Loss
+    loss_weight: 1
+    reduction: mean
+
+# validation settings
+val:
+  window_size: 8
+  val_freq: !!float 5.88e3
+  save_img: false
+  rgb2bgr: true
+  use_image: true
+  max_minibatch: 4
+
+  metrics:
+    psnr: # metric name, can be arbitrary
+      type: calculate_psnr
+      crop_border: 0
+      test_y_channel: false
+
+# logging settings
+logger:
+  print_freq: 5880
+  save_checkpoint_freq: !!float 5.88e3
+  use_tb_logger: true
+  wandb:
+    project: ~
+    resume_id: ~
+
+# dist training settings
+dist_params:
+  backend: nccl
+  port: 29500

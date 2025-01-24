@@ -1,0 +1,1 @@
+CDA_VISIBLE_DEVICES=1 python   test/test.py --opt option/T-CLOUD-CR-Former.yml  --weights experiments/t-cloud/net_g_best.pth  --input_dir /data/wy/data/cloud/T-Cloud/test/cloud/  --input_truth_dir /data/wy/data/cloud/T-Cloud/test/reference/

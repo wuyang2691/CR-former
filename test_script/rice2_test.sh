@@ -1,0 +1,1 @@
+ CDA_VISIBLE_DEVICES=2 python test/test.py --opt option/RICE2-CR-Former.yml --weights experiments/rice2/net_g_best.pth --input_dir datasets/RICE2/test/cloud  --input_truth_dir datasets/RICE2/test/reference/

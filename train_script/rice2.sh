@@ -1,0 +1,1 @@
+CUDA_VISIBLE_DEVICES=0,1  torchrun --nproc_per_node=2  --master_port=3457  basicsr/train.py -opt option/RICE2-CR-Former.yml   --launcher pytorch
