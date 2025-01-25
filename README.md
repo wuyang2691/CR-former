@@ -1,4 +1,4 @@
-# Attentive Contextual Attention for Cloud Removal
+# CR-former: Single-Image Cloud Removal with Focused Taylor Attention
 
 Yang Wu, Ye Deng, SanPingZhou, Yuhan Liu, Wenli Huang, and Jinjun Wang, "CR-former: Single-Image Cloud Removal with Focused Taylor Attention", IEEE Transactions on Geoscience and Remote Sensing (TGRS), 2024
 
@@ -177,8 +177,4 @@ This code is for educational and academic research purpose only.
 
 ## <a name="acknowledgements"></a>💡 Acknowledgements
 
-This code is built on [Restormer](https://github.com/swz30/Restormer).
-
-=======
-# CR-former
-The code will be public after the paper is accepted.
+This code is built on [Restormer](https://github.com/swz30/Restormer). We thank the authors for sharing their codes.
